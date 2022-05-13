@@ -109,10 +109,16 @@ public final class S3BucketEndpointResolver implements S3EndpointResolver {
      * @param bucketName     Bucket name for this particular operation.
      */
     private static void changeToDnsEndpoint(SdkHttpRequest.Builder mutableRequest, String bucketName) {
+        String newHost;
         if (mutableRequest.host().startsWith("s3")) {
-            String newHost = mutableRequest.host().replaceFirst("s3", bucketName + "." + "s3");
-            String newPath = mutableRequest.encodedPath().replaceFirst("/" + bucketName, "");
-            mutableRequest.host(newHost).encodedPath(newPath);
+            // String newHost = mutableRequest.host().replaceFirst("s3", bucketName + "." + "s3");
+            // String newPath = mutableRequest.encodedPath().replaceFirst("/" + bucketName, "");
+            // mutableRequest.host(newHost).encodedPath(newPath);
+            newHost = mutableRequest.host().replaceFirst("s3", bucketName + "." + "s3");
+        } else {
+            newHost = bucketName + "." + mutableRequest.host();
         }
+        String newPath = mutableRequest.encodedPath().replaceFirst("/" + bucketName, "");
+        mutableRequest.host(newHost).encodedPath(newPath);
     }
 }
